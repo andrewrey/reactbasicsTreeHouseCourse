@@ -30,24 +30,51 @@ const Header = ({ title, totalPlayers }) => {
   );
 };
 
-const Player = ({ playerName, playerScore }) => {
+const Player = ({ playerName }) => {
   return (
     <div className="player">
       <span className="player-name">{playerName}</span>
-      <Counter score={playerScore} />
+      <Counter />
     </div>
   );
 };
 
 class Counter extends React.Component {
-  state = {};
+  state = {
+    score: 0,
+  };
+
+  incrementScore = () => {
+    this.setState((prevState) => {
+      return {
+        score: (prevState.score += 1),
+      };
+    });
+  };
+
+  decrementScore = () => {
+    this.setState((prevState) => ({
+      score: (prevState.score -= 1),
+    }));
+  };
+
   render() {
-    let { score } = this.props;
+    let { score } = this.state;
     return (
       <div className="counter">
-        <button className="counter-action decrement">-</button>
+        <button
+          className="counter-action decrement"
+          onClick={this.decrementScore}
+        >
+          -
+        </button>
         <span className="counter-score">{score}</span>
-        <button className="counter-action increment">+</button>
+        <button
+          className="counter-action increment"
+          onClick={this.incrementScore}
+        >
+          +
+        </button>
       </div>
     );
   }
@@ -60,11 +87,7 @@ const App = ({ players }) => {
 
       {/*Players list  */}
       {players.map((player) => (
-        <Player
-          playerName={player.name}
-          playerScore={player.score}
-          key={player.id.toString()}
-        />
+        <Player playerName={player.name} key={player.id.toString()} />
       ))}
     </div>
   );
