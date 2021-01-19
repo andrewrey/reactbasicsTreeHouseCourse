@@ -1,26 +1,3 @@
-let playersArray = [
-  {
-    name: "Andrew",
-    score: 33,
-    id: 1,
-  },
-  {
-    name: "John",
-    score: 12,
-    id: 2,
-  },
-  {
-    name: "June",
-    score: 65,
-    id: 3,
-  },
-  {
-    name: "Tiny",
-    score: 26,
-    id: 4,
-  },
-];
-
 const Header = ({ title, totalPlayers }) => {
   return (
     <header>
@@ -30,10 +7,15 @@ const Header = ({ title, totalPlayers }) => {
   );
 };
 
-const Player = ({ playerName }) => {
+const Player = ({ playerName, remove }) => {
   return (
     <div className="player">
-      <span className="player-name">{playerName}</span>
+      <span className="player-name">
+        <button className="remove-player" onClick={remove}>
+          ✖
+        </button>
+        {playerName}
+      </span>
       <Counter />
     </div>
   );
@@ -80,20 +62,50 @@ class Counter extends React.Component {
   }
 }
 
-const App = ({ players }) => {
-  return (
-    <div className="scoreboard">
-      <Header title="Scoreboard" totalPlayers={players.length} />
+class App extends React.Component {
+  state = {
+    players: [
+      {
+        name: "Andrew",
+        id: 1,
+      },
+      {
+        name: "John",
+        id: 2,
+      },
+      {
+        name: "June",
+        id: 3,
+      },
+      {
+        name: "Tiny",
+        id: 4,
+      },
+    ],
+  };
+  handleRemovePlayer = (personID) => {
+    this.setState((prevState) => {
+      return {
+        players: prevState.players.filter((person) => person.id !== personID),
+      };
+    });
+  };
+  render() {
+    return (
+      <div className="scoreboard">
+        <Header title="Scoreboard" totalPlayers={this.state.players.length} />
 
-      {/*Players list  */}
-      {players.map((player) => (
-        <Player playerName={player.name} key={player.id.toString()} />
-      ))}
-    </div>
-  );
-};
+        {/*Players list  */}
+        {this.state.players.map((player) => (
+          <Player
+            playerName={player.name}
+            key={player.id.toString()}
+            remove={() => this.handleRemovePlayer(player.id)}
+          />
+        ))}
+      </div>
+    );
+  }
+}
 
-ReactDOM.render(
-  <App players={playersArray} />,
-  document.getElementById("root")
-);
+ReactDOM.render(<App />, document.getElementById("root"));
